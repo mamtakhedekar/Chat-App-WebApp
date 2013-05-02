@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Chat App (Web)</string>
+    <string name="user_name">Client</string>
+    <string name="app_port">6666</string>
+    <string name="latitude">40.744906</string>
+    <string name="longitude">-74.023937</string>
+    
+    <string-array name="subjects">
+        <item>films</item>
+        <item>books</item>
+        <item>music</item>
+    </string-array>
+    
+    <!-- String literals in the UI -->
+    <string name="web_service">Service:</string>
+    <string name="target_url_default">http://10.0.2.2:8080</string>
+    <string name="message_edit_text">Type your message here.</string>
+    <string name="checkin_label">LOGIN</string>
+    <string name="post_message_label">SEND</string>
+    <string name="get_messages_label">MESSAGES</string>
+<!--<string name="get_peers_label">PEERS</string> -->
+    <string name="checkout_label">LOGOUT</string>
+    
+    <string name="show_peers">SHOW PEERS</string>
+</resources>
