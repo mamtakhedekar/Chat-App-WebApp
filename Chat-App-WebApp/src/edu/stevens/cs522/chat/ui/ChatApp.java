@@ -14,6 +14,7 @@ import java.util.Set;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -48,7 +49,12 @@ public class ChatApp extends Activity implements LoaderManager.LoaderCallbacks<C
 	 */
 	CursorAdapter messageAdapter;
 	
+	private static final int LOADER_ID = 0;	
+	private static final int URL_LOADER = 0;
+	
 	private int lastSeqNumber = 0;
+	// The callbacks through which we will interact with the LoaderManager.
+	private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;	
 
 	/*
 	 * UI.
@@ -99,6 +105,20 @@ public class ChatApp extends Activity implements LoaderManager.LoaderCallbacks<C
 		/*
 		 * The list adapter displays the visible parts of the cursor.
 		 */
+		String[] to = new String[] { ChatContent.Messages.MESSAGE };
+        int[] from = new int[] { R.id.messages_message };
+        
+		mCallbacks = this;     
+        LoaderManager lm = getLoaderManager();
+        lm.initLoader(LOADER_ID, null, mCallbacks);
+        
+		messageAdapter = new SimpleCursorAdapter(
+        		this,       // Context.
+                R.layout.messages_row,  // Specify the row template to use 
+                null,          // Cursor encapsulates the DB query result.
+                to, 		// Array of cursor columns to bind to.
+                from, 0);
+		
 
 		/*
 		 * End Todo
@@ -123,22 +143,74 @@ public class ChatApp extends Activity implements LoaderManager.LoaderCallbacks<C
 //		startService(networkInfoLookup);
 	}
 	
+
 	/*
 	 * TODO: Since the content provider for messages received is now updated on a background
 	 * thread, it sends a broadcast to the UI to tell it to update the cursor.  The UI
 	 * should register a broadcast receiver that will change the cursor for the messages adapter.
 	 */
+	public class Receiver extends BroadcastReceiver {
+		
+		public Receiver()
+		{
+			Log.i("Receiver", "Created BroadcastReceiver" );
+		}
+		
+		@Override 
+		public void onReceive(Context context, Intent intent) {
+		      // react to the event
+			String action = intent.getAction();
+			if(action.equalsIgnoreCase(ChatService.NEW_MESSAGE_BROADCAST)){  
+			messageAdapter.changeCursor(makeMessageCursor());
+		   }
+		}
+	}	
+	
 
+	protected Cursor makeMessageCursor () {
+	
+		String[] projection = 
+				new String[] { ChatContent.Messages._ID,
+							   ChatContent.Messages.SENDER, 
+							   ChatContent.Messages.MESSAGE };
+		ContentResolver cr = getContentResolver();
+		Cursor c = cr.query(ChatContent.Messages.CONTENT_URI,
+		        projection, null, null, null);		
+		return c;
+	}
+		
 	/*
 	 * End Todo
 	 */
 
-	
+	Receiver updater; 
 	/*
 	 * TODO: Loader manager for messages content provider.
 	 */
 
+	public Loader<Cursor> onCreateLoader(int paramInt, Bundle paramBundle) {
+		String[] projection = 
+				new String[] { ChatContent.Messages._ID,
+							   ChatContent.Messages.SENDER, 
+							   ChatContent.Messages.MESSAGE };
+		switch
+		(LOADER_ID)
+		{
+		case URL_LOADER:
+			return new CursorLoader(this, ChatContent.Messages.CONTENT_URI, projection, null, null, null);
+		default:
+			return null;		//An invalid id was passed in
+		}
+	}
 
+	public void onLoadFinished(Loader<Cursor> paramLoader, Cursor paramD) {
+		messageAdapter.changeCursor(paramD);
+		
+	}
+
+	public void onLoaderReset(Loader<Cursor> paramLoader) {
+		messageAdapter.changeCursor(null);
+	}
 	/*
 	 * End To Do
 	 */
@@ -159,6 +231,21 @@ public class ChatApp extends Activity implements LoaderManager.LoaderCallbacks<C
 //	 * registered in onResume and unregistered in onDestroy.
 //	 */
 //
+	@Override
+	protected void onPause() {
+	   unregisterReceiver(updater);
+	   super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+	   this.updater = new Receiver();
+	   registerReceiver(
+	         this.updater, 
+	         new IntentFilter(
+	        		 ChatService.NEW_MESSAGE_BROADCAST));
+	   super.onResume();
+	}
 //	/*
 //	 * End Todo
 //	 */
@@ -247,5 +334,7 @@ public class ChatApp extends Activity implements LoaderManager.LoaderCallbacks<C
 		}
 		return false;
 	}
+
+
 
 }

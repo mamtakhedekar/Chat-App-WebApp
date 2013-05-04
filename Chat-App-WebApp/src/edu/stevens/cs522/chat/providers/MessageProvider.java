@@ -131,7 +131,6 @@ public class MessageProvider extends ContentProvider {
 
 	@Override
 	public String getType(Uri uri) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -167,7 +166,21 @@ public class MessageProvider extends ContentProvider {
 		 * TODO: Load messages from file, add new message, and save file.
 		 */
 
+		MatrixCursor cursor = loadMessages();
 		
+		String[] columns = { ChatContent.Messages._ID, 
+				 ChatContent.Messages.SENDER, 
+				 ChatContent.Messages.MESSAGE };
+		
+		String[] message = new String[columns.length];
+		message[0] = values.getAsString(ChatContent.Messages._ID);
+		message[1] = values.getAsString(ChatContent.Messages.SENDER);
+		message[2] = values.getAsString(ChatContent.Messages.MESSAGE);
+		
+		cursor.addRow(message);
+		
+		saveMessages(cursor);		
+
 		/*
 		 * End Todo.
 		 */

@@ -125,7 +125,12 @@ public class RestMethod {
 		/*
 		 * TODO: Execute a POST request to send a message to the server.
 		 */
-
+		try {
+		URL url = pushMessageUrl(baseUrl, message);
+		executeRequest(url, POST_METHOD);
+		} catch (IOException e) {
+			Log.e(TAG, "Web service error while posting a new message: " + e);
+		}
 		/*
 		 * End To do
 		 */
@@ -137,7 +142,16 @@ public class RestMethod {
 		/*
 		 * TODO: Execute a GET request to download recently posted messages.
 		 */
-		return null;
+		try {
+			URL url = getMessagesUrl(baseUrl, id, seq, radius);
+			GetMessagesResponse response = executePullRequest(GetMessagesResponse.class,
+					url, GET_METHOD);
+			return response;
+		} catch (IOException e) {
+			Log.e(TAG, "Web service error while getting local peer locations: "
+					+ e);
+			return null;
+		}
 		/*
 		 * End To do
 		 */

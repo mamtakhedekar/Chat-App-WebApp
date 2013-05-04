@@ -66,7 +66,10 @@ public class ServiceHelper {
 		/*
 		 * TODO: send a Get Messages request.
 		 */
-
+		setWebServiceUrl(url);
+		GetMessagesRequest request = new GetMessagesRequest(getWebServiceUrl(),seqNumber,radius);
+		request.setCoordinates(getCoordinates());
+		addRequest(request);
 		/*
 		 * End To do
 		 */
@@ -76,7 +79,10 @@ public class ServiceHelper {
 		/*
 		 * TODO: send a Post Message request.
 		 */
-
+		setWebServiceUrl(url);
+		PostMessageRequest request = new PostMessageRequest(getWebServiceUrl(), subjects, message);
+		request.setCoordinates(getCoordinates());
+		addRequest(request);
 		/*
 		 * End To do
 		 */
@@ -98,7 +104,11 @@ public class ServiceHelper {
 		 * The request is included as a Parcelable extra in the intent.
 		 * The key for the intent extra is in the ChatService class.
 		 */
-
+		Intent intent = new Intent();
+		intent.putExtra("edu.stevens.cs522.chat.rest.requests.internal.Request", request);
+		// @TODO Mamta check if the key from ChatService class is needed.
+		ui.startActivity(intent);
+		
 		/*
 		 * End Todo
 		 */

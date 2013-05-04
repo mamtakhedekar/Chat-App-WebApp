@@ -85,6 +85,10 @@ public class WebRequestProcessor {
 		/*
 		 * TODO: Invoke the checkIn operation using the REST method.
 		 */
+		HttpCoordinates coordinates = getCoordinates(request);
+		String id = coordinates.getPeer();
+		URL baseUrl = request.getUrl();
+		restMethod.checkIn(id, coordinates, baseUrl, request.getSubjects());
 
 		/*
 		 * End To do
@@ -95,7 +99,12 @@ public class WebRequestProcessor {
 		/*
 		 * TODO: Invoke the postMessage operation using the REST method.
 		 */
-
+		HttpCoordinates coordinates = getCoordinates(request);
+		String id = coordinates.getPeer();
+		URL baseUrl = request.getUrl();
+		Set<String> tags = request.getSubjects();
+		String message = request.getMessage();
+		restMethod.postMessage(id, coordinates, baseUrl, tags, message);
 		/*
 		 * End To do
 		 */
@@ -141,8 +150,19 @@ public class WebRequestProcessor {
 		/*
 		 * TODO: Make this a batch insertion.
 		 */
+		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 		for (GetPeersResponse.Peer peer : response.getPeers()) {
-			addSender(peer);
+			addSender(peer, ops);
+		}
+		
+		try {
+			ContentResolver cr = getContentResolver();
+//			cr.insert(ChatContent.Messages.CONTENT_URI, values);
+			cr.applyBatch(ChatContent.Peers.AUTHORITY, ops);
+		} catch (OperationApplicationException e) {
+			Log.e(TAG, "Exception while performing batch message insertions: "+e);
+		} catch (RemoteException e) {
+			Log.e(TAG, "IPC failure while performing batch message insertion: "+e);
 		}
 	}
 	
@@ -178,7 +198,7 @@ public class WebRequestProcessor {
 		ops.add(cpo.build());
 	}
 
-	public void addSender(GetPeersResponse.Peer info) {
+	public void addSender(GetPeersResponse.Peer info,  ArrayList<ContentProviderOperation> ops) {
 
 		/*
 		 * Add sender information to content provider for peers
@@ -196,6 +216,11 @@ public class WebRequestProcessor {
 		String where = ChatContent.Peers.NAME + "= ?";
 		String[] selectionArgs = new String[] { info.getPeer() };
 
+		ContentProviderOperation.Builder cpo = ContentProviderOperation.newInsert(ChatContent.Messages.CONTENT_URI);
+		cpo.withValues(values);
+		ops.add(cpo.build());
+		
+		/*
 		ContentResolver cr = getContentResolver();
 		Cursor c = cr.query(ChatContent.Peers.CONTENT_URI, projection, where,
 				selectionArgs, null);
@@ -205,6 +230,7 @@ public class WebRequestProcessor {
 			cr.update(ChatContent.Peers.CONTENT_URI, values, where,
 					selectionArgs);
 		}
+		*/
 	}
 	
 

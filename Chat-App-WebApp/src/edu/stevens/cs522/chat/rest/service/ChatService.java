@@ -47,7 +47,10 @@ public class ChatService extends IntentService  {
 		 * TODO: Extract the request message as a parcelable extra from the intent.
 		 * Instantiate the Web request processor class and dispatch this request.
 		 */
-
+		Request req = intent.getParcelableExtra("edu.stevens.cs522.chat.rest.requests.internal.Request");
+		WebRequestProcessor processor = new WebRequestProcessor(this);
+		 
+		processor.performRequest(req);
 		/*
 		 * End To do
 		 */
