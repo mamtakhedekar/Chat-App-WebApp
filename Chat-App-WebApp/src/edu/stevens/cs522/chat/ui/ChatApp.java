@@ -59,12 +59,13 @@ public class ChatApp extends Activity implements LoaderManager.LoaderCallbacks<C
 	/*
 	 * UI.
 	 */
-	EditText message;
-	EditText serviceUrl;
-	Button checkIn;
-	Button postMessage;
-	Button getMessages;
-	Button checkOut;
+	private EditText message;
+	private EditText serviceUrl;
+	private Button checkIn;
+	private Button postMessage;
+	private Button getMessages;
+	private Button checkOut;
+	private ListView msgList;
 	
 	Set<String> subjects;
 	
@@ -119,7 +120,10 @@ public class ChatApp extends Activity implements LoaderManager.LoaderCallbacks<C
                 to, 		// Array of cursor columns to bind to.
                 from, 0);
 		
-
+		// Bind to our new adapter.
+        msgList = (ListView)findViewById(R.id.msgList);
+        msgList.setAdapter(this.messageAdapter);
+		
 		/*
 		 * End Todo
 		 */

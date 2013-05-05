@@ -19,11 +19,10 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import edu.stevens.cs522.chat.rest.requests.HttpCoordinates;
-import edu.stevens.cs522.chat.rest.requests.GetPeersResponse;
-import edu.stevens.cs522.chat.rest.requests.PostMessageRequest;
-import edu.stevens.cs522.chat.rest.requests.GetMessagesResponse;
 import edu.stevens.cs522.chat.rest.requests.CheckInRequest;
+import edu.stevens.cs522.chat.rest.requests.GetMessagesResponse;
+import edu.stevens.cs522.chat.rest.requests.GetPeersResponse;
+import edu.stevens.cs522.chat.rest.requests.HttpCoordinates;
 
 public class RestMethod {
 
@@ -66,9 +65,9 @@ public class RestMethod {
 	}
 
 	// POST
-	private URL pushMessageUrl(URL baseUrl, String id) {
+	private URL pushMessageUrl(URL baseUrl, String id, String message) {
 		try {
-			return new URL(baseUrl + "/chat/" + id + "/messages");
+			return new URL(baseUrl + "/chat/" + id + "/messages/" + message);
 		} catch (MalformedURLException e) {
 			Log.e(TAG, "Malformed URL for Publish: " + e.getMessage());
 			return null;
@@ -126,7 +125,7 @@ public class RestMethod {
 		 * TODO: Execute a POST request to send a message to the server.
 		 */
 		try {
-		URL url = pushMessageUrl(baseUrl, message);
+		URL url = pushMessageUrl(baseUrl, id, message);
 		executeRequest(url, POST_METHOD);
 		} catch (IOException e) {
 			Log.e(TAG, "Web service error while posting a new message: " + e);

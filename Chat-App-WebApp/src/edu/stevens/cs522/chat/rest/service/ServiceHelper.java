@@ -5,9 +5,11 @@ import java.net.URL;
 import java.util.Set;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import edu.stevens.cs522.chat.R;
+//import edu.stevens.cs522.chat.messages.ChatService;
 import edu.stevens.cs522.chat.network.INetworkInfo;
 import edu.stevens.cs522.chat.rest.requests.internal.InternalCoordinates;
 import edu.stevens.cs522.chat.rest.requests.internal.PostMessageRequest;
@@ -15,6 +17,7 @@ import edu.stevens.cs522.chat.rest.requests.internal.GetMessagesRequest;
 import edu.stevens.cs522.chat.rest.requests.internal.Request;
 import edu.stevens.cs522.chat.rest.requests.internal.CheckInRequest;
 import edu.stevens.cs522.chat.rest.requests.internal.CheckOutRequest;
+import edu.stevens.cs522.chat.ui.ChatApp;
 
 
 public class ServiceHelper {
@@ -104,12 +107,16 @@ public class ServiceHelper {
 		 * The request is included as a Parcelable extra in the intent.
 		 * The key for the intent extra is in the ChatService class.
 		 */
-		Intent intent = new Intent();
-		intent.putExtra("edu.stevens.cs522.chat.rest.requests.internal.Request", request);
-		// @TODO Mamta check if the key from ChatService class is needed.
-		ui.startActivity(intent);
+		//Intent intent = new Intent();
+		Intent serviceIntent = new Intent(ui.getApplicationContext(), ChatService.class);
+		//bindService();//serviceIntent, Context.BIND_AUTO_CREATE);
 		
-		/*
+		serviceIntent.putExtra(ChatService.WEB_SERVICE_REQUEST_KEY, request);
+		// @TODO Mamta check if the key from ChatService class is needed.
+		
+		ui.startService(serviceIntent);
+		
+		/*`
 		 * End Todo
 		 */
 	}
