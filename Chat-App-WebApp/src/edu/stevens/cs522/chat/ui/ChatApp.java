@@ -35,7 +35,6 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import edu.stevens.cs522.chat.R;
 import edu.stevens.cs522.chat.network.INetworkInfo;
-import edu.stevens.cs522.chat.network.NetworkInfoService;
 import edu.stevens.cs522.chat.providers.ChatContent;
 import edu.stevens.cs522.chat.rest.service.ChatService;
 import edu.stevens.cs522.chat.rest.service.ServiceHelper;

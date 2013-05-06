@@ -11,7 +11,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
-import android.database.Cursor;
 import android.os.RemoteException;
 import android.util.Log;
 import edu.stevens.cs522.chat.providers.ChatContent;
@@ -212,9 +211,9 @@ public class WebRequestProcessor {
 		values.put(ChatContent.Peers.LATITUDE, info.getLatitude());
 		values.put(ChatContent.Peers.LONGITUDE, info.getLongitude());
 
-		String[] projection = new String[] { ChatContent.Peers.NAME };
-		String where = ChatContent.Peers.NAME + "= ?";
-		String[] selectionArgs = new String[] { info.getPeer() };
+//		String[] projection = new String[] { ChatContent.Peers.NAME };
+//		String where = ChatContent.Peers.NAME + "= ?";
+//		String[] selectionArgs = new String[] { info.getPeer() };
 
 		ContentProviderOperation.Builder cpo = ContentProviderOperation.newInsert(ChatContent.Messages.CONTENT_URI);
 		cpo.withValues(values);
