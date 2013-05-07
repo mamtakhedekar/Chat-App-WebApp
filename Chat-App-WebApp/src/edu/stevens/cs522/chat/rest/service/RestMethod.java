@@ -130,7 +130,7 @@ public class RestMethod {
 			URL url = pushMessageUrl(baseUrl, id, message);
 		//executeRequest(url, POST_METHOD);
 			edu.stevens.cs522.chat.rest.requests.PostMessageRequest postMsg = 
-				new edu.stevens.cs522.chat.rest.requests.PostMessageRequest( new HashSet(), message);
+				new edu.stevens.cs522.chat.rest.requests.PostMessageRequest( new HashSet<String>(), message);
 		
 			executePushRequest(edu.stevens.cs522.chat.rest.requests.PostMessageRequest.class, url, POST_METHOD, postMsg);
 		} catch (IOException e) {
