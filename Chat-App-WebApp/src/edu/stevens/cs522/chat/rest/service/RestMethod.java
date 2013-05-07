@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 
 import android.content.Context;
@@ -23,6 +24,7 @@ import edu.stevens.cs522.chat.rest.requests.CheckInRequest;
 import edu.stevens.cs522.chat.rest.requests.GetMessagesResponse;
 import edu.stevens.cs522.chat.rest.requests.GetPeersResponse;
 import edu.stevens.cs522.chat.rest.requests.HttpCoordinates;
+import edu.stevens.cs522.chat.rest.requests.internal.PostMessageRequest;
 
 public class RestMethod {
 
@@ -125,8 +127,12 @@ public class RestMethod {
 		 * TODO: Execute a POST request to send a message to the server.
 		 */
 		try {
-		URL url = pushMessageUrl(baseUrl, id, message);
-		executeRequest(url, POST_METHOD);
+			URL url = pushMessageUrl(baseUrl, id, message);
+		//executeRequest(url, POST_METHOD);
+			edu.stevens.cs522.chat.rest.requests.PostMessageRequest postMsg = 
+				new edu.stevens.cs522.chat.rest.requests.PostMessageRequest( new HashSet(), message);
+		
+			executePushRequest(edu.stevens.cs522.chat.rest.requests.PostMessageRequest.class, url, POST_METHOD, postMsg);
 		} catch (IOException e) {
 			Log.e(TAG, "Web service error while posting a new message: " + e);
 		}
