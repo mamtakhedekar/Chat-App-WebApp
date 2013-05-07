@@ -69,7 +69,7 @@ public class RestMethod {
 	// POST
 	private URL pushMessageUrl(URL baseUrl, String id, String message) {
 		try {
-			return new URL(baseUrl + "/chat/" + id + "/messages/" + message);
+			return new URL(baseUrl + "/chat/" + id + "/messages");
 		} catch (MalformedURLException e) {
 			Log.e(TAG, "Malformed URL for Publish: " + e.getMessage());
 			return null;
